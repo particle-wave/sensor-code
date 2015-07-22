@@ -1,3 +1,4 @@
+
    
 //Light libraries
 #include "Adafruit_WS2801.h"
@@ -10,8 +11,12 @@
 #include <math.h>
 
 //Software serial initializing
+
+#define rxPin 10
+#define txPin 11
+
 #include <SoftwareSerial.h>
-SoftwareSerial mySerial(10, 11); // RX, TX
+SoftwareSerial mySerial(rxPin, txPin); // RX, TX
 char delimiter = '\n';
 String dataFlag = "PPM";
 boolean startListening = false;
@@ -41,18 +46,24 @@ const int COmin = 200; //multiply manually by sigMultiplier
 const int COmax = 800; //multiply manually by sigMultiplier
 const int sigMultiplier = 1;
 void setup() {
+
    strip.begin();
   // Update LED contents, to start they are all 'off'
   strip.show();
+
+  pinMode(rxPin, INPUT);
+  pinMode(txPin, OUTPUT);
+  
   mySerial.begin(9600); // Start serial communication at 9600 bps
  }
  void loop() {
   
-   if (Serial.available() > 0){
+   if (mySerial.available() > 0){
      inChar = mySerial.read();  
      if (inChar != delimiter && inChar != ',') //we are not reading the delimiter, so we must be reading data characters
      {
        stringVal+=inChar;
+       Serial.println("Hi!");
      }
     else if(inChar != ',' && inChar != ' '){//we are reading the delimiter and have reached the end of the data point. Save it to floatVal, display it, and reset the stringVal buffer.
       if(!startListening){//check if we've received the data flag to start recording)
