@@ -22,8 +22,8 @@ String dataFlag = "PPM";
 boolean startListening = false;
 
 //Light initializing 
-uint8_t dataPin  = 2;    // Yellow wire on Adafruit Pixels
-uint8_t clockPin = 3;    // Green wire on Adafruit Pixels
+uint8_t dataPin  = 2;    // Green wire on DotStar // Yellow wire on Adafruit Pixels
+uint8_t clockPin = 3;    // Yellow wire on DotStar // Green wire on Adafruit Pixels
 
 Adafruit_WS2801 strip = Adafruit_WS2801(25, dataPin, clockPin);
 

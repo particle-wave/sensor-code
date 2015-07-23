@@ -26,9 +26,9 @@ uint32_t curr_color = 511;
 char inChar; // Data received from the serial port
 String stringVal;
 float floatVal;
-const int COmin = -50; //multiply manually by sigMultiplier
-const int COmax = 100; //multiply manually by sigMultiplier
-const int sigMultiplier = 100;
+const int COmin = 200; //multiply manually by sigMultiplier
+const int COmax = 800; //multiply manually by sigMultiplier
+const int sigMultiplier = 1;
 void setup() {
    strip.begin();
   // Update LED contents, to start they are all 'off'
@@ -53,7 +53,7 @@ void setup() {
     update_light_height(); 
     Serial.println("Arduino read " + String(floatVal) + " Light val: " + String(light_val));  
    }
-   
+   delay(30);
 }
 void establishContact(){
   while (Serial.available()<=0){

@@ -48,21 +48,24 @@ void serialEvent(Serial myPort)
       firstContact = true;
       myPort.write("A");
       //println("contact");
+
     }
   }
   else{ 
     if (rowCount < tableRows){
       TableRow row = AQData.getRow(rowCount);
-      timestamp = row.getString("timestamp");
-      pm2_5 = row.getFloat("PM 2.5");
-      CO = row.getFloat("CO"); 
+      timestamp = row.getString("Timestamp");
+//      pm2_5 = row.getFloat("PM 2.5");
+      CO = row.getFloat("Value"); 
       value = String.format("%.2f",CO);
       rowCount++;
       value += '\n';
       for (int i = 0; i < value.length(); i++){
         myPort.write(value.charAt(i));
+        
       }
-    }   
+    }
   }
 }
+
 
