@@ -53,17 +53,21 @@ void setup() {
 
   pinMode(rxPin, INPUT);
   pinMode(txPin, OUTPUT);
-  
+  Serial.begin(9600);
   mySerial.begin(9600); // Start serial communication at 9600 bps
  }
- void loop() {
-  
+ void loop() {  
    if (mySerial.available() > 0){
-     inChar = mySerial.read();  
-     if (inChar != delimiter && inChar != ',') //we are not reading the delimiter, so we must be reading data characters
+    Serial.println("data");
+    inChar = mySerial.read();
+    stringVal+=inChar;
+    Serial.print(inChar);
+    //if (inChar == '\n'){ 
+      //Serial.write(stringVal); 
+      //}
+     /*if (inChar != delimiter && inChar != ',') //we are not reading the delimiter, so we must be reading data characters
      {
        stringVal+=inChar;
-       Serial.println("Hi!");
      }
     else if(inChar != ',' && inChar != ' '){//we are reading the delimiter and have reached the end of the data point. Save it to floatVal, display it, and reset the stringVal buffer.
       if(!startListening){//check if we've received the data flag to start recording)
@@ -84,7 +88,10 @@ void setup() {
         }
         stringVal = "";
         delay(30);
-        }
+        }*/
+    }
+    else{
+      Serial.println("No Data");
     }
  }
 
