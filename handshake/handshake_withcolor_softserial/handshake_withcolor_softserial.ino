@@ -43,8 +43,8 @@ char inChar; // Data received from the serial port
 String stringVal;
 float floatVal;
 const int COmin = 200; //multiply manually by sigMultiplier
-const int COmax = 800; //multiply manually by sigMultiplier
-const int sigMultiplier = 1;
+const int COmax = 300; //multiply manually by sigMultiplier
+const int sigMultiplier = 1000;
 void setup() {
 
    strip.begin();
@@ -58,41 +58,27 @@ void setup() {
  }
  void loop() {  
    if (mySerial.available() > 0){
-    Serial.println("data");
-    inChar = mySerial.read();
-    stringVal+=inChar;
-    Serial.print(inChar);
-    //if (inChar == '\n'){ 
-      //Serial.write(stringVal); 
-      //}
-     /*if (inChar != delimiter && inChar != ',') //we are not reading the delimiter, so we must be reading data characters
-     {
-       stringVal+=inChar;
-     }
-    else if(inChar != ',' && inChar != ' '){//we are reading the delimiter and have reached the end of the data point. Save it to floatVal, display it, and reset the stringVal buffer.
-      if(!startListening){//check if we've received the data flag to start recording)
-        if(stringVal == dataFlag){
-          startListening = true;
-        }
-      }
-      else{ //we've already seen the dataFlag, convert and display this value
-        floatVal = stringVal.toFloat();
-        light_val = map(floatVal * sigMultiplier, COmin, COmax, light_low, light_high);
-        light_val = constrain(light_val, light_low, light_high);
-        //update color
-        curr_color = map(floatVal * sigMultiplier, COmin, COmax, good_color, bad_color);
-        constrain(curr_color, good_color, bad_color);
-        convertColor();
-        update_light_height(); 
-        Serial.println("Arduino read " + String(floatVal) + " Light val: " + String(light_val));  
-        }
-        stringVal = "";
-        delay(30);
-        }*/
+    inChar = mySerial.read();    
+    if(inChar != ' '&& inChar != ',' && inChar != '\n'){//ignore commas and whitespace
+      stringVal+=inChar;   
     }
-    else{
-      Serial.println("No Data");
-    }
+    if (inChar == '\n'){
+      Serial.print(stringVal);
+      Serial.print(" "); 
+      floatVal = stringVal.toFloat();
+      Serial.print(floatVal,6);
+      Serial.print(" "); 
+      light_val = map(floatVal * sigMultiplier, COmin, COmax, light_low, light_high);
+      light_val = constrain(light_val, light_low, light_high);
+      //update color
+      curr_color = map(floatVal * sigMultiplier, COmin, COmax, good_color, bad_color);
+      constrain(curr_color, good_color, bad_color);
+      convertColor();
+      update_light_height(); 
+      Serial.println("Arduino read " + String(floatVal) + " Light val: " + String(light_val));
+      stringVal = "";  
+    } 
+   }
  }
 
 void update_light_height()
