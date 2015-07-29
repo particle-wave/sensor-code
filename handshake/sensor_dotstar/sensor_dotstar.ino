@@ -1,14 +1,20 @@
+
+
    
-//Light libraries
+
 /* TIPS: Make sure that the echem board and Arduino share a common ground. 
 */
 
+//Light libraries
 #include <Adafruit_DotStar.h>
 #include "SPI.h" // Comment out this line if using Trinket or Gemma
 //#include "Adafruit_WS2801.h"
 #ifdef __AVR_ATtiny85__
  #include <avr/power.h>
 #endif
+
+//time library - At the moment this doesn't involve synching with an outside time, so it is just an internal clock
+#include <Time.h>
 
 //math library
 #include <math.h>
@@ -32,8 +38,8 @@ uint32_t curr_color = 0x4B0082;
 
 //Software serial initializing
 
-#define rxPin 10
-#define txPin 11
+#define rxPin 8 //White cable from sensor
+#define txPin 9 //Infrequently used
 
 #include <SoftwareSerial.h>
 SoftwareSerial mySerial(rxPin, txPin); // RX, TX
@@ -50,14 +56,18 @@ float floatVal;
 const int COmin = 400; //multiply manually by sigMultiplier
 const int COmax = 1300; //multiply manually by sigMultiplier
 const int sigMultiplier = 1000;
+
 void setup() {
    strip.begin();
   // Update LED contents, to start they are all 'off'
   strip.show();
+  
   pinMode(rxPin, INPUT);
   pinMode(txPin, OUTPUT);
   Serial.begin(9600);
   mySerial.begin(9600); // Start serial communication at 9600 bps
+
+  setTime(0);
  }
  void loop() {
    //test();
@@ -67,6 +77,9 @@ void setup() {
       stringVal+=inChar;   
     }
     if (inChar == '\n'){
+      Serial.print("Time:");
+      Serial.print(now()); //Print time in seconds since activation
+      Serial.print(" ");      
       Serial.print(stringVal);
       Serial.print(" "); 
       floatVal = stringVal.toFloat();

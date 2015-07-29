@@ -12,8 +12,8 @@
 
 //Software serial initializing
 
-#define rxPin 10
-#define txPin 11
+#define rxPin 8 //Receiving pin on Arduino (white wire)
+#define txPin 9
 
 #include <SoftwareSerial.h>
 SoftwareSerial mySerial(rxPin, txPin); // RX, TX
