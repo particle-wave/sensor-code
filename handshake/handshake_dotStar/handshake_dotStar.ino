@@ -30,7 +30,7 @@ const int light_high = numlights - 1;
 int light_val = 0;
 int light_direction = 1;
 uint8_t change = 1;
-uint32_t curr_color = 0x4B0082; 
+uint32_t curr_color = 0x404040; //Note that the leds are GRB
 
 char inChar; // Data received from the serial port
 String stringVal;
