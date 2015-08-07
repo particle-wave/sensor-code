@@ -35,17 +35,16 @@ String stringVal;
 float floatVal;
 const int COmin = 200; //multiply manually by sigMultiplier
 const int COmax = 800; //multiply manually by sigMultiplier
-const int sigMultiplier = 1;
+const int sigMultiplier = 1000;
 void setup() {
    strip.begin();
   // Update LED contents, to start they are all 'off'
   strip.show();
   
-   Serial.begin(9600); // Start serial communication at 9600 bps
-   establishContact();
+  Serial.begin(9600); // Start serial communication at 9600 bps
+  establishContact();
  }
  void loop() {
-  
    if (Serial.available() > 0){
      inChar = Serial.read(); 
      if (inChar != '\n')
@@ -61,12 +60,12 @@ void setup() {
     update_light_height(); 
     Serial.println("Arduino read " + String(floatVal) + " Light val: " + String(light_val));  
    }
-   
+   delay(30);
 }
 void establishContact(){
   while (Serial.available()<=0){
     Serial.println("A");
-    delay(10);
+    delay(300);
   }
 }
 
