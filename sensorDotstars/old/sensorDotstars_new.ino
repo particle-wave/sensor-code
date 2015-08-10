@@ -1,7 +1,3 @@
-
-
-   
-
 /* TIPS: Make sure that the echem board and Arduino share a common ground. 
 */
 
@@ -41,12 +37,14 @@ uint32_t curr_color = 0x4B0082;
 #define rxPin 8 //White cable from sensor
 #define txPin 9 //Infrequently used
 
+//Sfotware serial 
 #include <SoftwareSerial.h>
 SoftwareSerial mySerial(rxPin, txPin); // RX, TX
 char delimiter = '\n';
 String dataFlag = "PPM";
 boolean startListening = false;
-
+int fieldsOfInterest[2] = [4,9];
+#define lightField 9 //number for the field value that will be mapped to light display. Field 9 is unfiltered CO PPM.
 
 
 
@@ -71,31 +69,35 @@ void setup() {
  }
  void loop() {
    //test();
+    int fieldCount = 0;
     if (mySerial.available() > 0){
-    inChar = mySerial.read();    
-    if(inChar != ' '&& inChar != ',' && inChar != '\n'){//ignore commas and whitespace
-      stringVal+=inChar;   
-    }
-    if (inChar == '\n'){
-      Serial.print("Time:");
+      //first, print Arduino timestamp
       Serial.print(now()); //Print time in seconds since activation
-      Serial.print(" ");      
-      Serial.print(stringVal);
-      Serial.print(" "); 
-      floatVal = stringVal.toFloat();
-      Serial.print(floatVal,6);
-      Serial.print(" "); 
-      light_val = map(floatVal * sigMultiplier, COmin, COmax, light_low, light_high);
-      light_val = constrain(light_val, light_low, light_high);
-      //update color
-      //curr_color = map(floatVal * sigMultiplier, COmin, COmax, good_color, bad_color);
-      //constrain(curr_color, good_color, bad_color);
-      //convertColor();
+      Serial.print(",");
+      inChar = mySerial.read();
+      //WRITE TIME PLUS COMMA TO LOG FILE
+      //WRITE CHAR TO LOG FILE
+      
+      if (inChar == ","){ //if we see a comma, we've read a value
+            for(int i = 0; i < fieldsOfInterest.length(); i ++){
+              if (fieldCount == fieldsOfInterest[i]){
+                Serial.print(stringVal);
+                Serial.print(",");
+              }
+            if (fieldCount == lightField){ //we are reading a new value to map to the lights
+              floatVal = stringVal.toFloat();
+              light_val = map(floatVal * sigMultiplier, COmin, COmax, light_low, light_high);
+              light_val = constrain(light_val, light_low, light_high);
+              stringVal = "";  
+            }
+            fieldCount++;
+            }           
+      }
+    
       update_light_height(); 
       Serial.println("Arduino read " + String(floatVal) + " Light val: " + String(light_val));
-      stringVal = "";  
+      
     } 
-   }
  }
 
 void update_light_height()

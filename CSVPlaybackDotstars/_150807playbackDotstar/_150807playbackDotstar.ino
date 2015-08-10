@@ -84,16 +84,3 @@ void update_light_height()
  }
  strip.show();
 }
-
-void updateLightHeightReverse()
-{ //turn all off
-  for(int i=0; i <= light_high; i++){
-    strip.setPixelColor(i,0x000000);
-  }
-  //update to new value
-  for (int i=0; i < light_val; i++)
- {
-  strip.setPixelColor(i, curr_color);
- }
- strip.show();
-}
