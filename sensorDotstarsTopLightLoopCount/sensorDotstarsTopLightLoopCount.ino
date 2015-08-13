@@ -25,8 +25,9 @@ Adafruit_DotStar strip = Adafruit_DotStar(
 
 
 const int numlights = 60;
-const int light_low = 0;
+const int light_low = 1;
 const int light_high = numlights - 1;
+const int top_light = 0;
 int light_val = 0;
 int light_direction = 1;
 uint8_t change = 1;
@@ -47,7 +48,9 @@ char delimiter = '\n';
 String dataFlag = "PPM";
 boolean startListening = false;
 
-
+int onInterval = 40;
+int offInterval = 0;
+int timeInCycle;
 
 
 char inChar; // Data received from the serial port
@@ -67,12 +70,11 @@ void setup() {
   Serial.begin(9600);
   mySerial.begin(9600); // Start serial communication at 9600 bps
 
-  //  setTime(0);
 }
 void loop() {
     
 /*Read the serial port for values from the echem and map it to variables for controling the lights.*/
-  
+  strip.setPixelColor(top_light, 0x000000); //the top indicator light defualts to OFF
   if (mySerial.available() > 0) {
     
     inChar = mySerial.read();
@@ -91,34 +93,34 @@ void loop() {
       light_val = map(floatVal * sigMultiplier, COmin, COmax, light_low, light_high);
       light_val = constrain(light_val, light_low, light_high);
 
-      //Serial.println("Arduino read " + String(floatVal) + " Light val: " + String(light_val));
+      Serial.println("Arduino read " + String(floatVal) + " Light val: " + String(light_val));
       stringVal = "";
 
-      //update the light height
-      //update_light_height();
-
       //set the top light to on since we've read a value
-      strip.setPixelColor(light_low, 0xffffff);
+      strip.setPixelColor(top_light, 0xffffff);
       
     }
   }
 
 /*Update lights and add delays for flashing*/
   
-  strip.show(); //show current light height and top light
-  delay(40); //ON delay
-
-  //turn off lights
-  
-  for (int i = 0; i <= light_high; i++) {
-    strip.setPixelColor(i, 0x000000);
+ 
+  timeInCycle = millis()%(onInterval+offInterval);
+  if(timeInCycle >= onInterval){
+    //turn lights off
+    for (int i = 1; i <= light_high; i++) {
+      strip.setPixelColor(i, 0x000000);
+    }
+  }else{
+    //turn lights on
+    update_light_height();
+    
   }
-  strip.show();
-  delay(40);//OFF delay
+  strip.show(); //show current light height 
+}    
   
-  update_light_height();
-  strip.setPixelColor(light_low, 0x000000); //turn top light off
-}
+
+
 
 
 void update_light_height()
@@ -126,7 +128,7 @@ void update_light_height()
   //update to new value
   int redIntensity;
   //turn all off
-  for (int i = 0; i <= light_high; i++) {
+  for (int i = 1; i <= light_high; i++) {
     strip.setPixelColor(i, 0x000000);
   }
 
