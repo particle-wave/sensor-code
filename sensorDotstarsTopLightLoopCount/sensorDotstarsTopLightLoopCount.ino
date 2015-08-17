@@ -23,6 +23,10 @@
 Adafruit_DotStar strip = Adafruit_DotStar(
                            NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_BRG);
 
+int onInterval = 40;
+int offInterval = 40;
+int timeInCycle;
+
 
 const int numlights = 60;
 const int light_low = 1;
@@ -48,9 +52,7 @@ char delimiter = '\n';
 String dataFlag = "PPM";
 boolean startListening = false;
 
-int onInterval = 40;
-int offInterval = 0;
-int timeInCycle;
+
 
 
 char inChar; // Data received from the serial port
@@ -134,11 +136,17 @@ void update_light_height()
 
   for (int i = light_high; i > light_high - light_val; i--)
   {
-    //update color
-    redIntensity = map(i, light_high, light_low, 0, 0xff);
-    constrain(redIntensity, 0, 0xff);
-    strip.setPixelColor(i, 0x00, redIntensity, 0xff);
-  }
+     colorMapRed(i);
+
+  //this line for setting to just one color
+  //strip.setPixelColor(i, 0x4B0082)
+ }
+}
+
+void colorMapRed(int pixelIndex){
+  int redIntensity = map(pixelIndex, light_high, light_low, 0, 0xff);
+  constrain(redIntensity, 0,0xff); 
+  strip.setPixelColor(pixelIndex, 0x00, redIntensity, 0xff);    
 }
 
 void test() {
