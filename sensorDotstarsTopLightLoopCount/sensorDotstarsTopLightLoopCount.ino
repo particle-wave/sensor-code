@@ -76,7 +76,7 @@ void setup() {
 void loop() {
     
 /*Read the serial port for values from the echem and map it to variables for controling the lights.*/
-  strip.setPixelColor(top_light, 0x000000); //the top indicator light defualts to OFF
+  //strip.setPixelColor(top_light, 0x000000); //the top indicator light defualts to OFF
   if (mySerial.available() > 0) {
     
     inChar = mySerial.read();
@@ -99,7 +99,6 @@ void loop() {
       stringVal = "";
 
       //set the top light to on since we've read a value
-      strip.setPixelColor(top_light, 0xffffff);
       
     }
   }
@@ -110,7 +109,7 @@ void loop() {
   timeInCycle = millis()%(onInterval+offInterval);
   if(timeInCycle >= onInterval){
     //turn lights off
-    for (int i = 1; i <= light_high; i++) {
+    for (int i = 0; i <= light_high; i++) {
       strip.setPixelColor(i, 0x000000);
     }
   }else{
@@ -129,7 +128,7 @@ void update_light_height()
 {
   //update to new value
   int redIntensity;
-  //turn all off
+  //turn all off including top
   for (int i = 1; i <= light_high; i++) {
     strip.setPixelColor(i, 0x000000);
   }
@@ -141,6 +140,7 @@ void update_light_height()
   //this line for setting to just one color
   //strip.setPixelColor(i, 0x4B0082)
  }
+  strip.setPixelColor(top_light, 0xffffff);
 }
 
 void colorMapRed(int pixelIndex){
